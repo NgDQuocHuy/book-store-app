@@ -11,6 +11,8 @@ function BookList() {
         errorMessage: ""
     });
 
+    const [keyword, setKeyword] = useState("");
+
     useEffect(() => {
         try {
             setState({ ...state, loading: true });
@@ -31,6 +33,40 @@ function BookList() {
         }
     }, []);
 
+    const handleSearch = async (e) => {
+        let keyword = e.target.value;
+        setState({
+            ...state,
+            loading : true
+        })
+        let resBook = await BookService.getBooks();
+        
+        setState({
+            ...state,
+            loading : false,
+            books : keyword ? resBook.data.filter((book) => book.bookName.toLowerCase().includes(keyword.toLowerCase()) 
+                                                        || book.author.toLowerCase().includes(keyword.toLowerCase())) 
+                                                        : resBook.data
+        })   
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setState({
+            ...state,
+            loading : true
+        })
+        let resBook = await BookService.getBooks();
+        
+        setState({
+            ...state,
+            loading : false,
+            books : keyword ? resBook.data.filter((book) => book.bookName.toLowerCase().includes(keyword.toLowerCase()) 
+                                                        || book.author.toLowerCase().includes(keyword.toLowerCase())) 
+                                                        : resBook.data
+        }) 
+    }
+
     const { loading, books } = state;
 
     return (
@@ -46,9 +82,9 @@ function BookList() {
                     </div>
                     <p className="fst-italic">Ad occaecat adipisicing et nostrud occaecat ex Lorem id magna laborum aute ullamco. Non dolore aute culpa reprehenderit aliquip elit adipisicing aliqua officia excepteur.</p>
                     <div>
-                        <form className="d-flex w-25">
-                            <input type="text" className="form-control" />
-                            <button className="btn btn-outline-secondary btn-sm ms-2">Search</button>
+                        <form onSubmit={handleSubmit} className="d-flex w-25">
+                            <input type="text" className="form-control" value={keyword} onInput={(e) => setKeyword(e.target.value)}/>
+                            <button type="submit" className="btn btn-outline-secondary btn-sm ms-2">Search</button>
                         </form>
                     </div>
                 </div>
