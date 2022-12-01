@@ -1,0 +1,1 @@
+export const BOOKS_API = "https://63871a00d9b24b1be3e5e9e7.mockapi.io/books";
